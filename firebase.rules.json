@@ -1,0 +1,73 @@
+{
+  "rules": {
+    "imposter": {
+      "rooms": {
+        "$roomCode": {
+          ".read": true,
+          ".write": true,
+
+          "word": {
+            ".read": true,
+            ".write": true
+          },
+
+          "wordImage": {
+            ".read": true,
+            ".write": true
+          },
+
+          "imposter": {
+            ".read": true,
+            ".write": true
+          },
+
+          "players": {
+            ".read": true,
+            "$playerId": {
+              ".write": true
+            }
+          },
+
+          "votes": {
+            ".read": true,
+            "$voterId": {
+              ".write": true
+            }
+          },
+
+          "roleConfirmed": {
+            ".read": true,
+            "$playerId": {
+              ".write": true
+            }
+          },
+
+          "finalGuess": {
+            ".read": true,
+            ".write": true
+          },
+
+          "phase": {
+            ".read": true,
+            ".write": true
+          },
+
+          "timerSecs": {
+            ".read": true,
+            ".write": true
+          },
+
+          "timerStart": {
+            ".read": true,
+            ".write": true
+          }
+        }
+      }
+    },
+
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

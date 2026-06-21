@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>IMPOSTER — The Party Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════ LOADING SCREEN ═══════════════ -->
+  <div id="screen-loading" class="screen active">
+    <div class="loading-center">
+      <div class="eye-logo">
+        <div class="eye-outer">
+          <div class="eye-inner">
+            <div class="eye-pupil"></div>
+          </div>
+        </div>
+      </div>
+      <h1 class="logo-title">IMPOSTER</h1>
+      <p class="loading-sub">Connecting…</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ HOME SCREEN ═══════════════ -->
+  <div id="screen-home" class="screen">
+    <div class="home-bg-orbs">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+    </div>
+    <div class="home-content">
+      <div class="eye-logo small">
+        <div class="eye-outer">
+          <div class="eye-inner">
+            <div class="eye-pupil"></div>
+          </div>
+        </div>
+      </div>
+      <h1 class="logo-title">IMPOSTER</h1>
+      <p class="home-tagline">One of you is lying. Find them.</p>
+
+      <div class="card home-card">
+        <div class="input-group">
+          <label class="input-label">Your Nickname</label>
+          <input id="home-nickname" class="input-field" type="text" placeholder="Enter nickname…" maxlength="20" autocomplete="off" />
+        </div>
+
+        <div class="tab-row">
+          <button class="tab-btn active" id="tab-create" onclick="switchTab('create')">Create Room</button>
+          <button class="tab-btn" id="tab-join" onclick="switchTab('join')">Join Room</button>
+        </div>
+
+        <div id="panel-create" class="tab-panel active">
+          <button class="btn btn-primary btn-full" onclick="createRoom()">
+            <span class="btn-icon">✦</span> Create Room
+          </button>
+        </div>
+
+        <div id="panel-join" class="tab-panel">
+          <div class="input-group">
+            <label class="input-label">Room Code</label>
+            <input id="join-code" class="input-field input-code" type="text" placeholder="ABCD12" maxlength="6" autocomplete="off" />
+          </div>
+          <button class="btn btn-secondary btn-full" onclick="joinRoom()">
+            <span class="btn-icon">→</span> Join Room
+          </button>
+        </div>
+
+        <div id="home-error" class="error-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LOBBY SCREEN ═══════════════ -->
+  <div id="screen-lobby" class="screen">
+    <div class="screen-header">
+      <button class="btn-ghost" onclick="leaveRoom()">← Leave</button>
+      <div class="screen-title">LOBBY</div>
+      <div style="width:60px"></div>
+    </div>
+
+    <div class="lobby-content">
+      <div class="room-code-card">
+        <span class="room-code-label">Room Code</span>
+        <span id="lobby-code" class="room-code-display">------</span>
+        <button class="btn-copy" onclick="copyRoomCode()" title="Copy code">
+          <span id="copy-icon">⧉</span>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="players-header">
+          <span class="section-label">Players</span>
+          <span id="player-count" class="player-count-badge">0 / 10</span>
+        </div>
+        <ul id="player-list" class="player-list"></ul>
+
+        <div id="lobby-waiting" class="waiting-msg">Waiting for players to get ready…</div>
+
+        <div id="lobby-actions" class="lobby-actions">
+          <button id="btn-ready" class="btn btn-secondary btn-full" onclick="toggleReady()">
+            ✓ I'm Ready
+          </button>
+          <button id="btn-start" class="btn btn-primary btn-full hidden" onclick="startGame()">
+            ⚡ Start Game
+          </button>
+        </div>
+      </div>
+
+      <div class="settings-card card" id="host-settings">
+        <div class="section-label">Game Settings</div>
+        <div class="setting-row">
+          <label class="setting-label">Discussion Time</label>
+          <div class="setting-control">
+            <button class="btn-stepper" onclick="adjustTimer(-30)">−</button>
+            <span id="timer-display" class="setting-value">120s</span>
+            <button class="btn-stepper" onclick="adjustTimer(30)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ROLE REVEAL SCREEN ═══════════════ -->
+  <div id="screen-reveal" class="screen">
+    <div class="reveal-content">
+      <p class="reveal-hint">Only YOU should be looking at this screen</p>
+
+      <div id="reveal-card" class="role-card">
+        <div class="role-card-inner" id="reveal-card-inner">
+
+          <!-- Front face (tap to reveal) -->
+          <div class="role-card-front">
+            <div class="eye-logo medium">
+              <div class="eye-outer">
+                <div class="eye-inner">
+                  <div class="eye-pupil"></div>
+                </div>
+              </div>
+            </div>
+            <p class="tap-hint">Tap to reveal your role</p>
+          </div>
+
+          <!-- Back face (actual role) -->
+          <div class="role-card-back" id="role-card-back">
+            <!-- filled by JS -->
+          </div>
+
+        </div>
+      </div>
+
+      <button id="btn-saw-word" class="btn btn-primary btn-full hidden" onclick="confirmSawRole()">
+        I Saw My Role ✓
+      </button>
+
+      <div id="reveal-waiting" class="waiting-msg hidden">Waiting for others…</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DISCUSSION SCREEN ═══════════════ -->
+  <div id="screen-discussion" class="screen">
+    <div class="discussion-content">
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring" viewBox="0 0 120 120">
+          <circle class="timer-ring-bg" cx="60" cy="60" r="54"/>
+          <circle class="timer-ring-fg" id="timer-ring-fg" cx="60" cy="60" r="54"/>
+        </svg>
+        <div class="timer-center">
+          <div id="timer-seconds" class="timer-number">120</div>
+          <div class="timer-label">seconds</div>
+        </div>
+      </div>
+
+      <h2 class="discuss-heading">Discuss!</h2>
+      <p class="discuss-sub">Talk in real life. Who is the imposter?</p>
+
+      <div class="discussion-players">
+        <div class="section-label">Players This Round</div>
+        <ul id="discussion-player-list" class="player-list compact"></ul>
+      </div>
+
+      <button class="btn btn-ghost btn-full" onclick="skipToVoting()" id="btn-skip-timer">
+        Skip to Voting →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ VOTING SCREEN ═══════════════ -->
+  <div id="screen-voting" class="screen">
+    <div class="screen-header">
+      <div></div>
+      <div class="screen-title">VOTE</div>
+      <div></div>
+    </div>
+
+    <div class="voting-content">
+      <p class="voting-sub">Who do you think is the imposter?</p>
+      <p class="voting-sub small">You cannot vote for yourself</p>
+
+      <ul id="voting-list" class="voting-list"></ul>
+
+      <div id="voting-waiting" class="waiting-msg hidden">
+        <div class="spinner"></div>
+        Waiting for everyone to vote…
+      </div>
+
+      <div id="vote-cast-msg" class="vote-cast hidden">
+        <span class="vote-cast-icon">✓</span>
+        Vote cast! Waiting for others…
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FINAL GUESS SCREEN ═══════════════ -->
+  <div id="screen-final-guess" class="screen">
+    <div class="final-guess-content">
+      <div class="imposter-badge">🎭 IMPOSTER</div>
+      <h2 class="final-guess-heading">Last Chance!</h2>
+      <p class="final-guess-sub">You were caught. Guess the secret word to still win!</p>
+
+      <div class="card">
+        <div class="input-group">
+          <label class="input-label">Your Guess</label>
+          <input id="final-guess-input" class="input-field input-code" type="text" placeholder="Type the word…" maxlength="30" autocomplete="off" />
+        </div>
+        <button class="btn btn-primary btn-full" onclick="submitFinalGuess()">
+          Submit Guess
+        </button>
+      </div>
+
+      <div id="final-guess-waiting" class="waiting-msg hidden">Waiting for imposter's guess…</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RESULTS SCREEN ═══════════════ -->
+  <div id="screen-results" class="screen">
+    <div class="results-content">
+
+      <div id="result-banner" class="result-banner">
+        <div id="result-emoji" class="result-emoji">🎉</div>
+        <h2 id="result-headline" class="result-headline">Players Win!</h2>
+        <p id="result-sub" class="result-sub"></p>
+      </div>
+
+      <div class="card result-word-card">
+        <div class="section-label">The Secret Word</div>
+        <div id="result-word" class="result-word-text"></div>
+        <img id="result-image" class="result-word-image" src="" alt="" />
+      </div>
+
+      <div class="card">
+        <div class="section-label">The Imposter Was</div>
+        <div id="result-imposter-name" class="result-imposter-name"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Votes</div>
+        <ul id="result-votes-list" class="votes-list"></ul>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-primary btn-full" onclick="playAgain()">⟳ Play Again</button>
+        <button class="btn btn-ghost btn-full" onclick="leaveRoom()">Leave Room</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <script src="words.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
