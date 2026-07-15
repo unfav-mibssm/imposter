@@ -62,8 +62,8 @@
 
         <div id="panel-join" class="tab-panel">
           <div class="input-group">
-            <label class="input-label">Room Code</label>
-            <input id="join-code" class="input-field input-code" type="text" placeholder="ABCD12" maxlength="6" autocomplete="off" />
+            <label class="input-label">4-Digit Room Code</label>
+            <input id="join-code" class="input-field input-code" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="1234" maxlength="4" autocomplete="off" />
           </div>
           <button class="btn btn-secondary btn-full" onclick="joinRoom()">
             <span class="btn-icon">→</span> Join Room
@@ -85,8 +85,10 @@
 
     <div class="lobby-content">
       <div class="room-code-card">
-        <span class="room-code-label">Room Code</span>
-        <span id="lobby-code" class="room-code-display">------</span>
+        <div>
+          <span class="room-code-label">Room Code</span>
+          <div id="lobby-code" class="room-code-display">----</div>
+        </div>
         <button class="btn-copy" onclick="copyRoomCode()" title="Copy code">
           <span id="copy-icon">⧉</span>
         </button>
@@ -132,7 +134,6 @@
 
       <div id="reveal-card" class="role-card">
         <div class="role-card-inner" id="reveal-card-inner">
-
           <!-- Front face (tap to reveal) -->
           <div class="role-card-front">
             <div class="eye-logo medium">
@@ -144,12 +145,8 @@
             </div>
             <p class="tap-hint">Tap to reveal your role</p>
           </div>
-
           <!-- Back face (actual role) -->
-          <div class="role-card-back" id="role-card-back">
-            <!-- filled by JS -->
-          </div>
-
+          <div class="role-card-back" id="role-card-back"></div>
         </div>
       </div>
 
@@ -183,7 +180,7 @@
         <ul id="discussion-player-list" class="player-list compact"></ul>
       </div>
 
-      <button class="btn btn-ghost btn-full" onclick="skipToVoting()" id="btn-skip-timer">
+      <button class="btn btn-ghost btn-full hidden" onclick="skipToVoting()" id="btn-skip-timer">
         Skip to Voting →
       </button>
     </div>
@@ -218,21 +215,26 @@
   <!-- ═══════════════ FINAL GUESS SCREEN ═══════════════ -->
   <div id="screen-final-guess" class="screen">
     <div class="final-guess-content">
-      <div class="imposter-badge">🎭 IMPOSTER</div>
+      <div class="imposter-badge">🎭 IMPOSTER CAUGHT</div>
       <h2 class="final-guess-heading">Last Chance!</h2>
-      <p class="final-guess-sub">You were caught. Guess the secret word to still win!</p>
+      <p class="final-guess-sub" id="final-guess-desc">You were caught. Guess the secret word to still win!</p>
 
-      <div class="card">
+      <!-- Only shown to imposter -->
+      <div class="card" id="final-guess-input-card">
         <div class="input-group">
           <label class="input-label">Your Guess</label>
           <input id="final-guess-input" class="input-field input-code" type="text" placeholder="Type the word…" maxlength="30" autocomplete="off" />
         </div>
-        <button class="btn btn-primary btn-full" onclick="submitFinalGuess()">
+        <button id="btn-submit-guess" class="btn btn-primary btn-full" onclick="submitFinalGuess()">
           Submit Guess
         </button>
       </div>
 
-      <div id="final-guess-waiting" class="waiting-msg hidden">Waiting for imposter's guess…</div>
+      <!-- Shown to everyone waiting -->
+      <div id="final-guess-waiting" class="waiting-msg hidden">
+        <div class="spinner"></div>
+        Waiting for imposter's guess…
+      </div>
     </div>
   </div>
 
